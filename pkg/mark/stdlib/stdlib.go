@@ -149,6 +149,34 @@ func templates(api *confluence.API) (*template.Template, error) {
 			`</ac:structured-macro>`,
 		),
 
+		`ac:info`: text(
+			`<ac:structured-macro ac:name="info">`,
+			`<ac:parameter ac:name="icon">{{ or .ShowIcon false }}</ac:parameter>`,
+			`<ac:parameter ac:name="title">{{ .Title }}</ac:parameter>`,
+			`</ac:structured-macro>`,
+		),
+
+		`ac:tip`: text(
+			`<ac:structured-macro ac:name="tip">`,
+			`<ac:parameter ac:name="icon">{{ or .ShowIcon false }}</ac:parameter>`,
+			`<ac:parameter ac:name="title">{{ .Title }}</ac:parameter>`,
+			`</ac:structured-macro>`,
+		),
+
+		`ac:note`: text(
+			`<ac:structured-macro ac:name="note">`,
+			`<ac:parameter ac:name="icon">{{ or .ShowIcon false }}</ac:parameter>`,
+			`<ac:parameter ac:name="title">{{ .Title }}</ac:parameter>`,
+			`</ac:structured-macro>`,
+		),
+
+		`ac:warning`: text(
+			`<ac:structured-macro ac:name="warning">`,
+			`<ac:parameter ac:name="icon">{{ or .ShowIcon false }}</ac:parameter>`,
+			`<ac:parameter ac:name="title">{{ .Title }}</ac:parameter>`,
+			`</ac:structured-macro>`,
+		),
+
 		// TODO(seletskiy): more templates here
 	} {
 		templates, err = templates.New(name).Parse(body)

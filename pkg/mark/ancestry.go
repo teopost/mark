@@ -14,6 +14,7 @@ func EnsureAncestry(
 	api *confluence.API,
 	space string,
 	ancestry []string,
+	pageversion string,
 ) (*confluence.PageInfo, error) {
 	var parent *confluence.PageInfo
 
@@ -66,7 +67,7 @@ func EnsureAncestry(
 
 	if !dryRun {
 		for _, title := range rest {
-			page, err := api.CreatePage(space, parent, title, ``)
+			page, err := api.CreatePage(space, parent, title, ``, pageversion)
 			if err != nil {
 				return nil, karma.Format(
 					err,

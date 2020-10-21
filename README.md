@@ -179,6 +179,8 @@ See task MYJIRA-123.
 
 ## Installation
 
+{toc:printable=true|maxLevel=2|minLevel=2|class=bigpink|exclude=[1//2]|type=flat|outline=true|separator=pipe|include=.*}
+
 ### Go Get
 
 ```bash

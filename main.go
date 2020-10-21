@@ -116,13 +116,14 @@ Options:
   -p <token>           Use specified token for updating Confluence page.
   -l <url>             Edit specified Confluence page.
                         If -l is not specified, file should contain metadata (see
-                        above).
+						above).
   -b --base-url <url>  Base URL for Confluence.
                         Alternative option for base_url config field.
   -f <file>            Use specified markdown file for converting to html.
   -k                   Lock page editing to current user only to prevent accidental
                         manual edits over Confluence Web UI.
   --dry-run            Resolve page and ancestry, show resulting HTML and exit.
+  --legacy             Legacy page mode
   --compile-only       Show resulting HTML and don't update Confluence page content.
   --debug              Enable debug logs.
   --trace              Enable trace logs.
@@ -142,7 +143,9 @@ func main() {
 		compileOnly   = args["--compile-only"].(bool)
 		dryRun        = args["--dry-run"].(bool)
 		editLock      = args["-k"].(bool)
+		legacy        = args["--legacy"].(bool)
 	)
+	var pageversion = ""
 
 	log.Init(args["--debug"].(bool), args["--trace"].(bool))
 
@@ -205,10 +208,16 @@ func main() {
 		}
 	}
 
+	if legacy {
+		pageversion = "v1"
+	} else {
+		pageversion = "v2"
+	}
+
 	if dryRun {
 		compileOnly = true
 
-		_, _, err := mark.ResolvePage(dryRun, api, meta)
+		_, _, err := mark.ResolvePage(dryRun, api, meta, pageversion)
 		if err != nil {
 			log.Fatalf(err, "unable to resolve page location")
 		}
@@ -239,7 +248,7 @@ func main() {
 	var target *confluence.PageInfo
 
 	if meta != nil {
-		parent, page, err := mark.ResolvePage(dryRun, api, meta)
+		parent, page, err := mark.ResolvePage(dryRun, api, meta, pageversion)
 		if err != nil {
 			log.Fatalf(
 				karma.Describe("title", meta.Title).Reason(err),
@@ -248,7 +257,7 @@ func main() {
 		}
 
 		if page == nil {
-			page, err = api.CreatePage(meta.Space, parent, meta.Title, ``)
+			page, err = api.CreatePage(meta.Space, parent, meta.Title, ``, pageversion)
 			if err != nil {
 				log.Fatalf(
 					err,

@@ -372,6 +372,7 @@ func (api *API) CreatePage(
 	parent *PageInfo,
 	title string,
 	body string,
+	pageversion string,
 ) (*PageInfo, error) {
 	payload := map[string]interface{}{
 		"type":  "page",
@@ -386,11 +387,11 @@ func (api *API) CreatePage(
 			},
 		},
 		"metadata": map[string]interface{}{
-		  "properties": map[string]interface{}{
-		    "editor": map[string]interface{}{
-		       "value": "v2",
-		    },
-		  },
+			"properties": map[string]interface{}{
+				"editor": map[string]interface{}{
+					"value": pageversion,
+				},
+			},
 		},
 	}
 

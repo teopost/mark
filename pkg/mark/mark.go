@@ -12,6 +12,7 @@ func ResolvePage(
 	dryRun bool,
 	api *confluence.API,
 	meta *Meta,
+	pageversion string,
 ) (*confluence.PageInfo, *confluence.PageInfo, error) {
 	page, err := api.FindPage(meta.Space, meta.Title)
 	if err != nil {
@@ -60,6 +61,7 @@ func ResolvePage(
 		api,
 		meta.Space,
 		meta.Parents,
+		pageversion,
 	)
 	if err != nil {
 		return nil, nil, karma.Format(
