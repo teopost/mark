@@ -259,10 +259,17 @@ In this example, I'm using the `kovetskiy/mark` image for creating a job contain
 repository with documentation will be cloned to. The following command finds all `*.md` files and runs mark against them one by one:
 
 ```bash
-for file in $(find -type f -name '*.md'); do
-    echo "> Sync $file";
-    mark -u $MARK_USER -p $MARK_PASS -b $MARK_URL -f $file || exit 1;
-    echo;
+#!/bin/bash
+
+echo "" > errors.log
+
+find . -type f -name "*.md" -print0 | while IFS= read -r -d '' file; do
+    echo ""
+    echo ">>> Sync $file";
+    mark -f "$file"
+    if [ $? -eq 1 ]; then
+      echo "Error: $file"  >> errors.log
+    fi
 done
 ```
 
