@@ -43,8 +43,10 @@ func CompileMarkdown(
 	log.Tracef(nil, "rendering markdown:\n%s", string(markdown))
 
 	colon := regexp.MustCompile(`---BLACKFRIDAY-COLON---`)
+	//colon := regexp.MustCompile(`-`)
+	//colon := regexp.MustCompile(`2punti`)
 
-	tags := regexp.MustCompile(`<(/?\S+?):(\S+?)>`)
+	tags := regexp.MustCompile(`<(/a?\S+?):(\S+?)>`)
 
 	markdown = tags.ReplaceAll(
 		markdown,
@@ -85,6 +87,50 @@ func CompileMarkdown(
 	)
 
 	html = colon.ReplaceAll(html, []byte(`:`))
+
+	// log.Tracef(nil, "rendered markdown to html:\n%s", string(html))
+
+	return string(html)
+}
+
+func CompileMarkdownNEW(
+	markdown []byte,
+	stdlib *stdlib.Lib,
+) string {
+	log.Tracef(nil, "rendering markdown:\n%s", string(markdown))
+
+	renderer := ConfluenceRenderer{
+		Renderer: blackfriday.HtmlRenderer(
+			blackfriday.HTML_USE_XHTML|
+				blackfriday.HTML_USE_SMARTYPANTS|
+				blackfriday.HTML_SMARTYPANTS_FRACTIONS|
+				blackfriday.HTML_SMARTYPANTS_DASHES|
+				blackfriday.HTML_SMARTYPANTS_LATEX_DASHES,
+			"", "",
+		),
+
+		Stdlib: stdlib,
+	}
+
+	html := blackfriday.MarkdownOptions(
+		markdown,
+		renderer,
+		blackfriday.Options{
+			Extensions: blackfriday.EXTENSION_NO_INTRA_EMPHASIS |
+				blackfriday.EXTENSION_TABLES |
+				blackfriday.EXTENSION_FENCED_CODE |
+				blackfriday.EXTENSION_AUTOLINK |
+				blackfriday.EXTENSION_LAX_HTML_BLOCKS |
+				blackfriday.EXTENSION_STRIKETHROUGH |
+				blackfriday.EXTENSION_SPACE_HEADERS |
+				blackfriday.EXTENSION_HEADER_IDS |
+				blackfriday.EXTENSION_AUTO_HEADER_IDS |
+				blackfriday.EXTENSION_TITLEBLOCK |
+				blackfriday.EXTENSION_BACKSLASH_LINE_BREAK |
+				blackfriday.EXTENSION_DEFINITION_LISTS |
+				blackfriday.EXTENSION_NO_EMPTY_LINE_BEFORE_BLOCK,
+		},
+	)
 
 	log.Tracef(nil, "rendered markdown to html:\n%s", string(html))
 

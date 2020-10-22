@@ -47,6 +47,8 @@ func ExtractMeta(data []byte) (*Meta, []byte, error) {
 
 		offset += len(line) + 1
 
+		// log.Infof(nil, "TEO: : %v, %s, %v", offset, line, len(line))
+
 		matches := reHeaderPatternV2.FindStringSubmatch(line)
 		if matches == nil {
 			matches = reHeaderPatternV1.FindStringSubmatch(line)
